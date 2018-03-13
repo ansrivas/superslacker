@@ -134,9 +134,13 @@ class SuperSlacker(ProcessStateMonitor):
         pheaders, pdata = childutils.eventdata(payload + '\n')
         to_state = headers['eventname']
         emoji = self.get_emoji(to_state)
-        msg = ('[{0}]Process {processname} in group {groupname} changed  '
-               'from state {from_state} to {to_state} {emoji}'.format(self.hostname, to_state=headers['eventname'],
-                                                                      emoji=emoji, **pheaders)
+        msg = ('`[{0}]` Process `{processname}` in group `{groupname}` changed  '
+               'from state `{from_state}` to `{to_state}` {emoji}'.format(self.hostname, to_state=headers['eventname'],
+                                                                          emoji=emoji, **pheaders)
+               )
+        msg = ('Host             : `[{0}]`\nProcess        : `{processname}`\nGroupname : `{groupname}`\nStatus           : '
+               '`{from_state}` => `{to_state}` {emoji}'.format(self.hostname, to_state=headers['eventname'],
+                                                               emoji=emoji, **pheaders)
                )
         return msg
 
@@ -162,7 +166,8 @@ class SuperSlacker(ProcessStateMonitor):
                 'username': 'superslacker',
                 'icon_emoji': ':sos:',
                 'link_names': 1,
-                'attachments': [{"text": message['attachment'], "color": "danger"}]
+                'attachments': [{"text": message['attachment'], "color": "danger"}],
+                'mrkdwn': True,
             }
             if message['webhook']:
                 webhook = IncomingWebhook(url=message['webhook'])
