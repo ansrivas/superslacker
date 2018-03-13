@@ -1,0 +1,10 @@
+name: supervisor-pyslack
+channels:
+  - defaults
+dependencies:
+- python=2.7
+- pip:
+  - supervisor
+  - superlance
+  - twine
+  - m2r

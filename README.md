@@ -41,7 +41,7 @@ Add text attachment to message. Attachment will have red color border along the 
 
 ## Notes
 
-:ghost: gonna be used as an icon for the message and `superslacker` as a username. 
+:ghost: gonna be used as an icon for the message and `superslacker` as a username.
 
 
 ## Configuration
@@ -56,3 +56,9 @@ command=superslacker --token="slacktoken-slacktoken-slacktoken" --channel="#noti
 events=PROCESS_STATE,TICK_60
 ```
 
+If using webhook:
+```
+[eventlistener:superslacker]
+command=superslacker --webhook="https://complete-webhook-string/" --channel="#notifications"
+events=PROCESS_STATE,TICK_60
+```

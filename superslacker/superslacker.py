@@ -1,7 +1,6 @@
-#!/usr/bin/env python
+# !/usr/bin/env python
 # -*- coding: utf-8 -*-
-##############################################################################
-#
+
 # Copyright (c) 2007 Agendaless Consulting and Contributors.
 # All Rights Reserved.
 #
@@ -54,7 +53,9 @@ from supervisor import childutils
 
 
 class SuperSlacker(ProcessStateMonitor):
-    process_state_events = ['PROCESS_STATE_FATAL']
+    process_state_events = ['PROCESS_STATE_FATAL', 'PROCESS_STATE_RUNNING',
+                            'PROCESS_STATE_EXITED', 'PROCESS_STATE_STOPPED',
+                            'SUPERVISOR_STATE_CHANGE']
 
     @classmethod
     def _get_opt_parser(cls):
@@ -117,11 +118,27 @@ class SuperSlacker(ProcessStateMonitor):
         self.webhook = kwargs.get('webhook', None)
         self.attachment = kwargs.get('attachment', None)
 
+    def get_emoji(self, eventname):
+        """Get emojis based on type of message."""
+        emo_keys = {
+            "EXITED": ":sob:",
+            "RUNNING": ":clap:",
+            "DEFAULT": ":smile:"
+        }
+        for key in emo_keys:
+            if key in eventname:
+                return emo_keys[key]
+        return emo_keys["DEFAULT"]
+
     def get_process_state_change_msg(self, headers, payload):
         pheaders, pdata = childutils.eventdata(payload + '\n')
-        txt = ("[{0}] Process {groupname}:{processname} "
-               "failed to start too many times".format(self.hostname, **pheaders))
-        return txt
+        to_state = headers['eventname']
+        emoji = self.get_emoji(to_state)
+        msg = ('[{0}]Process {processname} in group {groupname} changed  '
+               'from state {from_state} to {to_state} {emoji}'.format(self.hostname, to_state=headers['eventname'],
+                                                                      emoji=emoji, **pheaders)
+               )
+        return msg
 
     def send_batch_notification(self):
         message = self.get_batch_message()
@@ -150,6 +167,7 @@ class SuperSlacker(ProcessStateMonitor):
             if message['webhook']:
                 webhook = IncomingWebhook(url=message['webhook'])
                 webhook.post(data=payload)
+                self.write_stderr("Sent notification over webhook.")
             if message['token']:
                 slack = Slacker(token=message['token'])
                 slack.chat.post_message(**payload)
