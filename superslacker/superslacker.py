@@ -122,6 +122,7 @@ class SuperSlacker(ProcessStateMonitor):
         """Get emojis based on type of message."""
         emo_keys = {
             "EXITED": ":sob:",
+            "STOPPED": ":sob:",
             "RUNNING": ":clap:",
             "DEFAULT": ":smile:"
         }
