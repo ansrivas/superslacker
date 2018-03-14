@@ -53,6 +53,7 @@ from supervisor import childutils
 
 
 class SuperSlacker(ProcessStateMonitor):
+    """."""
     process_state_events = ['PROCESS_STATE_FATAL', 'PROCESS_STATE_RUNNING',
                             'PROCESS_STATE_EXITED', 'PROCESS_STATE_STOPPED',
                             'SUPERVISOR_STATE_CHANGE']
@@ -123,6 +124,7 @@ class SuperSlacker(ProcessStateMonitor):
         emo_keys = {
             "EXITED": ":sob:",
             "STOPPED": ":sob:",
+            "FATAL": ":sob:",
             "RUNNING": ":clap:",
             "DEFAULT": ":smile:"
         }
