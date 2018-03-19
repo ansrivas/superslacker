@@ -21,9 +21,9 @@ import sys
 py_version = sys.version_info[:2]
 
 if py_version < (2, 6):
-    raise RuntimeError('On Python 2, superslacker requires Python 2.6 or later')
+    raise RuntimeError('On Python 2, rocketpy requires Python 2.6 or later')
 elif (3, 0) < py_version < (3, 2):
-    raise RuntimeError('On Python 3, superslacker requires Python 3.2 or later')
+    raise RuntimeError('On Python 3, rocketpy requires Python 3.2 or later')
 
 from setuptools import setup, find_packages
 
@@ -37,10 +37,10 @@ try:
 except (IOError, OSError):
     CHANGES = ''
 
-setup(name='superslacker',
+setup(name='rocketpy',
       version='0.2.2',
       license='BSD-derived (http://www.repoze.org/LICENSE.txt)',
-      description='superslacker plugin for supervisord',
+      description='rocketpy plugin for supervisord',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
           "Development Status :: 3 - Alpha",
@@ -61,7 +61,7 @@ setup(name='superslacker',
       ],
       author='Sebastian Lara Menares',
       author_email='slaramen@gmail.com',
-      url="https://github.com/MTSolutions/superslacker",
+      url="https://github.com/MTSolutions/rocketpy",
       maintainer="Sebastian Lara Menares",
       maintainer_email="slaramen@gmail.com",
       keywords='supervisor slack monitoring',
@@ -79,10 +79,10 @@ setup(name='superslacker',
           'slacker',
           'mock'
       ],
-      test_suite='superslacker.tests',
+      test_suite='rocketpy.tests',
       entry_points="""\
       [console_scripts]
-      fatalslack = superslacker.superslacker:fatalslack
-      superslacker = superslacker.superslacker:main
+      fatalslack = rocketpy.rocketpy:fatalslack
+      rocketpy = rocketpy.rocketpy:main
       """
       )

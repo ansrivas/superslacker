@@ -1,19 +1,19 @@
 # Superslacker
 
-Superslacker is a supervisor "event listener" that sends events from processes that run under [supervisor](http://supervisord.org) to [Slack](https://slack.com). When `superslacker` receives an event, it sends a message notification to a configured `Slack` channel.
+Superslacker is a supervisor "event listener" that sends events from processes that run under [supervisor](http://supervisord.org) to [Slack](https://slack.com). When `rocketpy` receives an event, it sends a message notification to a configured `Slack` channel.
 
-`superslacker` uses [Slacker](https://github.com/os/slacker) full-featured Python interface for the Slack API.
+`rocketpy` uses [Slacker](https://github.com/os/slacker) full-featured Python interface for the Slack API.
 
 ## Installation
 
 ```
-pip install superslacker
+pip install rocketpy
 ```
 
 ## Command-Line Syntax
 
 ```bash
-$ superslacker [-t token] [-c channel] [-n hostname] [-w webhook] [-a attachment]
+$ rocketpy [-t token] [-c channel] [-n hostname] [-w webhook] [-a attachment]
 ```
 
 ### Options
@@ -41,24 +41,24 @@ Add text attachment to message. Attachment will have red color border along the 
 
 ## Notes
 
-:ghost: gonna be used as an icon for the message and `superslacker` as a username.
+:ghost: gonna be used as an icon for the message and `rocketpy` as a username.
 
 
 ## Configuration
-An `[eventlistener:x]` section must be placed in `supervisord.conf` in order for `superslacker` to do its work. See the “Events” chapter in the Supervisor manual for more information about event listeners.
+An `[eventlistener:x]` section must be placed in `supervisord.conf` in order for `rocketpy` to do its work. See the “Events” chapter in the Supervisor manual for more information about event listeners.
 
-The following example assume that `superslacker` is on your system `PATH`.
+The following example assume that `rocketpy` is on your system `PATH`.
 
 
 ```
-[eventlistener:superslacker]
-command=superslacker --token="slacktoken-slacktoken-slacktoken" --channel="#notifications" --hostname="HOST"
+[eventlistener:rocketpy]
+command=rocketpy --token="slacktoken-slacktoken-slacktoken" --channel="#notifications" --hostname="HOST"
 events=PROCESS_STATE,TICK_60
 ```
 
 If using webhook:
 ```
-[eventlistener:superslacker]
-command=superslacker --webhook="https://complete-webhook-string/" --channel="#notifications"
+[eventlistener:rocketpy]
+command=rocketpy --webhook="https://complete-webhook-string/" --channel="#notifications"
 events=PROCESS_STATE,TICK_60
 ```

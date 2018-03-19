@@ -22,23 +22,23 @@
 # A supervisor config snippet that tells supervisor to use this script
 # as a listener is below.
 #
-# [eventlistener:superslacker]
-# command=python superslacker
+# [eventlistener:rocketpy]
+# command=python rocketpy
 # events=PROCESS_STATE,TICK_60
 
 """
-Usage: superslacker [-t token] [-c channel] [-n hostname] [-w webhook] [-a attachment]
+Usage: rocketpy [-t token] [-c channel] [-n hostname] [-w webhook] [-a attachment]
 
 Options:
   -h, --help            show this help message and exit
   -t TOKEN, --token=TOKEN
-                        Slack Token
+                        RocketChat Token
   -c CHANNEL, --channel=CHANNEL
-                        Slack Channel
+                        RocketChat Channel
   -w WEBHOOK, --webhook=WEBHOOK
-                        Slack WebHook URL
+                        RocketChat WebHook URL
   -a ATTACHMENT, --attachment=ATTACHMENT
-                        Slack Attachment text
+                        RocketChat Attachment text
   -n HOSTNAME, --hostname=HOSTNAME
                         System Hostname
 """
@@ -46,13 +46,12 @@ Options:
 import copy
 import os
 import sys
-
-from slacker import Slacker, IncomingWebhook
+import requests
 from superlance.process_state_monitor import ProcessStateMonitor
 from supervisor import childutils
 
 
-class SuperSlacker(ProcessStateMonitor):
+class RocketPy(ProcessStateMonitor):
     """."""
 
     process_state_events = ['PROCESS_STATE_FATAL', 'PROCESS_STATE_RUNNING',
@@ -64,10 +63,10 @@ class SuperSlacker(ProcessStateMonitor):
         from optparse import OptionParser
 
         parser = OptionParser()
-        parser.add_option("-t", "--token", help="Slack Token")
-        parser.add_option("-c", "--channel", help="Slack Channel")
-        parser.add_option("-w", "--webhook", help="Slack WebHook URL")
-        parser.add_option("-a", "--attachment", help="Slack Attachment text")
+        parser.add_option("-t", "--token", help="RocketChat Token")
+        parser.add_option("-c", "--channel", help="RocketChat Channel")
+        parser.add_option("-w", "--webhook", help="RocketChat WebHook URL")
+        parser.add_option("-a", "--attachment", help="RocketChat Attachment text")
         parser.add_option("-n", "--hostname", help="System Hostname")
 
         return parser
@@ -166,38 +165,42 @@ class SuperSlacker(ProcessStateMonitor):
             'messages': self.batchmsgs
         }
 
+    def post_message(self, url, data):
+        """Send a post request to a given webhook url."""
+        with requests.Session() as sess:
+            sess.post(url=url, data=data)
+
     def send_message(self, message):
         """."""
         for msg in message['messages']:
             payload = {
                 'channel': message['channel'],
                 'text': msg,
-                'username': 'superslacker',
+                'username': 'rocketpy',
                 'icon_emoji': ':sos:',
                 'link_names': 1,
                 'attachments': [{"text": message['attachment'], "color": "danger"}],
                 'mrkdwn': True,
             }
             if message['webhook']:
-                webhook = IncomingWebhook(url=message['webhook'])
-                webhook.post(data=payload)
+                self.post_message(url=message['webhook'], data=payload)
                 self.write_stderr("Sent notification over webhook.")
-            if message['token']:
-                slack = Slacker(token=message['token'])
-                slack.chat.post_message(**payload)
+            # if message['token']:
+            #     slack = Slacker(token=message['token'])
+            #     slack.chat.post_message(**payload)
 
 
 def main():
     """."""
-    superslacker = SuperSlacker.create_from_cmd_line()
-    superslacker.run()
+    rocketpy = RocketPy.create_from_cmd_line()
+    rocketpy.run()
 
 
 def fatalslack():
     """."""
-    superslacker = SuperSlacker.create_from_cmd_line()
-    superslacker.write_stderr('fatalslack is deprecated. Please use superslack instead\n')
-    superslacker.run()
+    rocketpy = RocketPy.create_from_cmd_line()
+    rocketpy.write_stderr('fatalslack is deprecated. Please use superslack instead\n')
+    rocketpy.run()
 
 
 if __name__ == '__main__':
