@@ -38,7 +38,7 @@ except (IOError, OSError):
     CHANGES = ''
 
 setup(name='rocketpy',
-      version='0.2.2',
+      version='0.2.3',
       license='BSD-derived (http://www.repoze.org/LICENSE.txt)',
       description='rocketpy plugin for supervisord',
       long_description=README + '\n\n' + CHANGES,
@@ -71,12 +71,12 @@ setup(name='rocketpy',
       install_requires=[
           'superlance',
           'supervisor',
-          'slacker'
+          'requests'
       ],
       tests_require=[
           'supervisor',
           'superlance',
-          'slacker',
+          'requests',
           'mock'
       ],
       test_suite='rocketpy.tests',
