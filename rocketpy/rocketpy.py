@@ -71,7 +71,7 @@ class RocketPy(ProcessStateMonitor):
         parser.add_option("-w", "--webhook", help="RocketChat WebHook URL")
         parser.add_option("-a", "--attachment", help="RocketChat Attachment text")
         parser.add_option("-n", "--hostname", help="System Hostname")
-        parser.add_option("-k", "--insecure", action="store_false", default=True, help="Skip server certificate verification")
+        parser.add_option("-k", "--insecure", action="store_true", default=False, help="Skip server certificate verification")
 
         return parser
 
@@ -126,7 +126,7 @@ class RocketPy(ProcessStateMonitor):
         self.hostname = kwargs.get('hostname', None)
         self.webhook = kwargs.get('webhook', None)
         self.attachment = kwargs.get('attachment', None)
-        self.insecure = kwargs.get('insecure', False)
+        self.insecure = kwargs.get('insecure')
 
     def get_emoji(self, eventname):
         """Get emojis based on type of message."""
@@ -188,12 +188,8 @@ class RocketPy(ProcessStateMonitor):
                 'mrkdwn': True,
             }
             if message['webhook']:
-
                 self.post_message(url=message['webhook'], data=payload, verify=False if message['insecure'] else True)
                 self.write_stderr("Sent notification over webhook.")
-            # if message['token']:
-            #     slack = Slacker(token=message['token'])
-            #     slack.chat.post_message(**payload)
 
 
 def main():
