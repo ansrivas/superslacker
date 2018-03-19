@@ -71,7 +71,7 @@ class RocketPy(ProcessStateMonitor):
         parser.add_option("-w", "--webhook", help="RocketChat WebHook URL")
         parser.add_option("-a", "--attachment", help="RocketChat Attachment text")
         parser.add_option("-n", "--hostname", help="System Hostname")
-        parser.add_option("-k", "--insecure", action="store_false", help="Skip server certificate verification")
+        parser.add_option("-k", "--insecure", action="store_false", default=True, help="Skip server certificate verification")
 
         return parser
 
@@ -111,7 +111,6 @@ class RocketPy(ProcessStateMonitor):
     def create_from_cmd_line(cls):
         """."""
         options = cls.get_cmd_line_options()
-
         if 'SUPERVISOR_SERVER_URL' not in os.environ:
             sys.stderr.write('Must run as a supervisor event listener\n')
             sys.exit(1)
