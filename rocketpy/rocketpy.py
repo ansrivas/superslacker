@@ -143,8 +143,8 @@ class RocketPy(ProcessStateMonitor):
         pheaders, pdata = childutils.eventdata(payload + '\n')
         to_state = headers['eventname']
         emoji = self.get_emoji(to_state)
-        msg = ('Host             : `[{0}]`\nProcess        : `{processname}`\nGroupname : `{groupname}`\n'
-               'Status           : `{from_state}` => `{to_state}` {emoji}'
+        msg = ('```Host             : `[{0}]`\nProcess        : `{processname}`\nGroupname : `{groupname}`\n'
+               'Status           : `{from_state}` => `{to_state}` {emoji}```'
                .format(self.hostname, to_state=headers['eventname'], emoji=emoji, **pheaders)
                )
         return msg
