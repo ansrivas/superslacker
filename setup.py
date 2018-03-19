@@ -38,7 +38,7 @@ except (IOError, OSError):
     CHANGES = ''
 
 setup(name='rocketpy',
-      version='0.2.4',
+      version='0.2.5',
       license='BSD-derived (http://www.repoze.org/LICENSE.txt)',
       description='rocketpy plugin for supervisord',
       long_description=README + '\n\n' + CHANGES,

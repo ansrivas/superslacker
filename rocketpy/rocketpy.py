@@ -41,6 +41,9 @@ Options:
                         RocketChat Attachment text
   -n HOSTNAME, --hostname=HOSTNAME
                         System Hostname
+
+  -k , --insecure
+                        Skip server certificate verification.
 """
 
 import copy
@@ -68,6 +71,7 @@ class RocketPy(ProcessStateMonitor):
         parser.add_option("-w", "--webhook", help="RocketChat WebHook URL")
         parser.add_option("-a", "--attachment", help="RocketChat Attachment text")
         parser.add_option("-n", "--hostname", help="System Hostname")
+        parser.add_option("-k", "--insecure", action="store_false", help="Skip server certificate verification")
 
         return parser
 
@@ -123,6 +127,7 @@ class RocketPy(ProcessStateMonitor):
         self.hostname = kwargs.get('hostname', None)
         self.webhook = kwargs.get('webhook', None)
         self.attachment = kwargs.get('attachment', None)
+        self.insecure = kwargs.get('insecure', False)
 
     def get_emoji(self, eventname):
         """Get emojis based on type of message."""
@@ -162,13 +167,14 @@ class RocketPy(ProcessStateMonitor):
             'webhook': self.webhook,
             'channel': self.channel,
             'attachment': self.attachment,
+            'insecure': self.insecure,
             'messages': self.batchmsgs
         }
 
-    def post_message(self, url, data):
+    def post_message(self, url, data, verify):
         """Send a post request to a given webhook url."""
         with requests.Session() as sess:
-            sess.post(url=url, data=data)
+            sess.post(url=url, data=data, verify=verify)
 
     def send_message(self, message):
         """."""
@@ -183,7 +189,8 @@ class RocketPy(ProcessStateMonitor):
                 'mrkdwn': True,
             }
             if message['webhook']:
-                self.post_message(url=message['webhook'], data=payload)
+
+                self.post_message(url=message['webhook'], data=payload, verify=False if message['insecure'] else True)
                 self.write_stderr("Sent notification over webhook.")
             # if message['token']:
             #     slack = Slacker(token=message['token'])
